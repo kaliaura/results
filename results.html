@@ -1,0 +1,442 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>KaliAura '25 | Results</title>
+    
+    <!-- Fonts: Poppins for all text -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;700;800;900&display=swap" rel="stylesheet">
+    <!-- Font Awesome for Icons (Trophy, Crown, etc.) -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+
+    <style>
+        /* --- VARIABLES & THEME --- */
+        :root {
+            --bg: #030303;
+            --text: #ffffff;
+            --text-muted: #ffffff80;
+            
+            /* The "Aura" Colors */
+            --aura-1: #7c3aed; /* Violet */
+            --aura-2: #db2777; /* Magenta */
+            --aura-3: #06b6d4; /* Cyan */
+            
+            --glass: rgba(255, 255, 255, 0.03);
+            --glass-border: rgba(255, 255, 255, 0.1);
+            --card-hover: rgba(255, 255, 255, 0.08);
+
+            /* Medal Colors */
+            --gold: #ffc107;
+            --silver: #bdbdbd;
+            --bronze: #cd7f32;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            background-color: var(--bg);
+            color: var(--text);
+            font-family: 'Poppins', sans-serif;
+            min-height: 100vh;
+        }
+
+        h1, h2, h3, .logo { font-family: 'Poppins', sans-serif; }
+
+        /* --- BACKGROUND ORB --- */
+        .aura-bg {
+            position: fixed;
+            top: 0; left: 0; width: 100vw; height: 100vh;
+            z-index: -1;
+            background: radial-gradient(circle at 50% 50%, rgba(124, 58, 237, 0.15), transparent 50%);
+            opacity: 0.6;
+            filter: blur(60px);
+            pointer-events: none;
+        }
+        .orb {
+            position: absolute;
+            border-radius: 50%;
+            filter: blur(80px);
+            opacity: 0.4;
+        }
+        .orb-1 { width: 400px; height: 400px; background: var(--aura-3); top: -10%; left: -10%; }
+        .orb-2 { width: 300px; height: 300px; background: var(--aura-1); bottom: 10%; right: -5%; }
+
+        /* --- NAVBAR --- */
+        .navbar {
+            position: sticky;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 90%;
+            max-width: 1000px;
+            background: rgba(10, 10, 10, 0.6);
+            backdrop-filter: blur(12px);
+            border: 1px solid var(--glass-border);
+            padding: 12px 30px;
+            border-radius: 100px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            z-index: 100;
+        }
+
+        .logo { font-weight: 800; font-size: 1.2rem; letter-spacing: -0.5px; }
+        .nav-menu { display: flex; gap: 5px; }
+
+        .nav-link {
+            text-decoration: none;
+            color: var(--text-muted);
+            font-size: 0.9rem;
+            font-weight: 500;
+            padding: 8px 20px;
+            border-radius: 50px;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .nav-link.active {
+            color: #fff;
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .nav-link:hover:not(.active) { color: #fff; }
+
+        /* --- MAIN CONTENT LAYOUT --- */
+        main {
+            padding-top: 100px;
+            padding-bottom: 80px;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding-left: 20px;
+            padding-right: 20px;
+        }
+
+        .section-title {
+            font-size: clamp(2rem, 5vw, 3rem);
+            font-weight: 800;
+            margin-bottom: 30px;
+            text-align: center;
+        }
+        .section-title span { color: var(--aura-2); }
+        
+        /* --- 1. TEAM STANDINGS SECTION --- */
+        .team-standings-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 25px;
+            margin-bottom: 80px;
+        }
+
+        .team-card-result {
+            background: var(--glass);
+            border: 1px solid var(--glass-border);
+            border-radius: 16px;
+            padding: 30px;
+            position: relative;
+            text-align: center;
+            transition: all 0.3s ease;
+            overflow: hidden;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
+        }
+        
+        .team-card-result:hover {
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            transform: translateY(-5px);
+        }
+
+        .team-card-result.first { border-top: 5px solid var(--gold); }
+        .team-card-result.second { border-top: 5px solid var(--silver); }
+        .team-card-result.third { border-top: 5px solid var(--bronze); }
+
+
+        .crown-icon {
+            color: var(--gold);
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            position: absolute;
+            top: 15px;
+            right: 20px;
+        }
+
+        .team-name-big {
+            font-size: 1.8rem;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 5px;
+        }
+
+        .team-score-big {
+            font-size: 3.5rem;
+            font-weight: 900;
+            color: var(--aura-1);
+            line-height: 1;
+        }
+
+        .team-points-label {
+            font-size: 0.9rem;
+            color: var(--text-muted);
+            margin-top: 5px;
+        }
+        
+        /* --- 2. DETAILED RESULTS SECTION --- */
+        .detailed-results-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+        }
+
+        .event-result-card {
+            background: var(--glass);
+            border: 1px solid var(--glass-border);
+            border-radius: 16px;
+            padding: 25px;
+            transition: background 0.3s;
+        }
+        
+        .event-result-card:hover {
+            background: var(--card-hover);
+        }
+
+        .event-title {
+            font-size: 1.6rem;
+            font-weight: 700;
+            margin-bottom: 20px;
+            color: var(--aura-3);
+            border-bottom: 1px solid var(--glass-border);
+            padding-bottom: 10px;
+        }
+
+        .winner-entry {
+            display: flex;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+        
+        .winner-rank {
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-weight: 700;
+            font-size: 0.9rem;
+            margin-right: 15px;
+            flex-shrink: 0;
+        }
+
+        .rank-1 .winner-rank { background-color: var(--gold); color: #333; }
+        .rank-2 .winner-rank { background-color: var(--silver); color: #333; }
+        .rank-3 .winner-rank { background-color: var(--bronze); color: #333; }
+
+        .winner-info {
+            display: flex;
+            flex-direction: column;
+            text-align: left;
+        }
+        
+        .candidate-name {
+            font-weight: 600;
+            font-size: 1rem;
+            line-height: 1.2;
+        }
+        
+        .candidate-team {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+        }
+
+        /* Footer */
+        footer {
+            text-align: center;
+            padding: 80px 20px 40px;
+            color: var(--text-muted);
+            font-size: 0.9rem;
+            border-top: 1px solid var(--glass-border);
+            margin-top: 50px;
+        }
+        
+        /* Responsive Adjustments */
+        @media (max-width: 768px) {
+            .navbar {
+                width: 95%;
+                padding: 10px 15px;
+            }
+            .nav-menu {
+                gap: 2px;
+            }
+            .nav-link {
+                padding: 6px 10px;
+                font-size: 0.8rem;
+            }
+            .team-standings-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- 1. ANIMATED BACKGROUND -->
+    <div class="aura-bg">
+        <div class="orb orb-1"></div>
+        <div class="orb orb-2"></div>
+    </div>
+
+    <!-- 2. NAVBAR -->
+    <nav class="navbar">
+        <div class="logo">KALI AURA</div>
+        <div class="nav-menu">
+             <a href="https://kaliaura.github.io/" class="nav-link">Home</a>
+            <a href="https://kaliaura.github.io" class="nav-link">About</a>
+            <a href="https://kaliaura.github.io/results" class="nav-link">Results</a>
+            <a href="https://kaliaura.github.io/teams" class="nav-link active">Teams</a>
+            <a href="https://kaliaura.github.io/gallery" class="nav-link">Gallery</a>
+        </div>
+    </nav>
+
+    <!-- 3. MAIN CONTENT -->
+    <main>
+        
+        <h2 class="section-title">Team <span>Standings</span></h2>
+        
+        <!-- --- SECTION 1: TEAM STANDINGS --- -->
+        <section class="team-standings-grid">
+            
+            <!-- 1st Place Card -->
+            <div class="team-card-result first">
+                <i class="fas fa-crown crown-icon"></i>
+                <p class="team-points-label">CHAMPIONS</p>
+                <div class="team-name-big">Calindra</div>
+                <div class="team-score-big">800</div>
+                <div class="team-points-label">Total Points</div>
+            </div>
+
+            <!-- 2nd Place Card -->
+            <div class="team-card-result second">
+                <p class="team-points-label">RUNNER-UP</p>
+                <div class="team-name-big">Ignira</div>
+                <div class="team-score-big">650</div>
+                <div class="team-points-label">Total Points</div>
+            </div>
+            
+            <!-- 3rd Place Card -->
+            <div class="team-card-result third">
+                <p class="team-points-label">3RD PLACE</p>
+                <div class="team-name-big">Fyrona</div>
+                <div class="team-score-big">420</div>
+                <div class="team-points-label">Total Points</div>
+            </div>
+        </section>
+
+        <h2 class="section-title">Event <span>Results</span></h2>
+
+        <!-- --- SECTION 2: DETAILED EVENT RESULTS --- -->
+        <section class="detailed-results-grid">
+            
+            <!-- Card 1: E-Sports (Valorant) -->
+            <div class="event-result-card">
+                <h3 class="event-title">Coming Soon</h3>
+                
+                <div class="winner-entry rank-1">
+                    <div class="winner-rank">1</div>
+                    <div class="winner-info">
+                        <span class="candidate-name">Coming Soon</span>
+                        <span class="candidate-team">Coming Soon</span>
+                    </div>
+                </div>
+
+                <div class="winner-entry rank-2">
+                    <div class="winner-rank">2</div>
+                    <div class="winner-info">
+                        <span class="candidate-name">Coming Soon</span>
+                        <span class="candidate-team">Coming Soon</span>
+                    </div>
+                </div>
+                
+                <div class="winner-entry rank-3">
+                    <div class="winner-rank">3</div>
+                    <div class="winner-info">
+                        <span class="candidate-name">Coming Soon</span>
+                        <span class="candidate-team">Coming Soon</span>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Card 2: Performing Arts (Classical Dance) -->
+            <div class="event-result-card">
+                <h3 class="event-title">Coming Soon</h3>
+                
+                <div class="winner-entry rank-1">
+                    <div class="winner-rank">1</div>
+                    <div class="winner-info">
+                        <span class="candidate-name">Coming Soon</span>
+                        <span class="candidate-team">Coming Soon</span>
+                    </div>
+                </div>
+
+                <div class="winner-entry rank-2">
+                    <div class="winner-rank">2</div>
+                    <div class="winner-info">
+                        <span class="candidate-name">Coming Soon</span>
+                        <span class="candidate-team">Coming Soon</span>
+                    </div>
+                </div>
+                
+                <div class="winner-entry rank-3">
+                    <div class="winner-rank">3</div>
+                    <div class="winner-info">
+                        <span class="candidate-name">Coming Soon</span>
+                        <span class="candidate-team">Coming Soon</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Card 3: Literary (Creative Writing) -->
+            <div class="event-result-card">
+                <h3 class="event-title">Coming Soon</h3>
+                
+                <div class="winner-entry rank-1">
+                    <div class="winner-rank">1</div>
+                    <div class="winner-info">
+                        <span class="candidate-name">Coming Soon</span>
+                        <span class="candidate-team">Coming Soon</span>
+                    </div>
+                </div>
+
+                <div class="winner-entry rank-2">
+                    <div class="winner-rank">2</div>
+                    <div class="winner-info">
+                        <span class="candidate-name">Coming Soon</span>
+                        <span class="candidate-team">Coming Soon</span>
+                    </div>
+                </div>
+                
+                <div class="winner-entry rank-3">
+                    <div class="winner-rank">3</div>
+                    <div class="winner-info">
+                        <span class="candidate-name">Coming Soon</span>
+                        <span class="candidate-team">Coming Soon</span>
+                    </div>
+                </div>
+            </div>
+
+
+            
+            <!-- Add more event cards as needed -->
+            
+        </section>
+        
+    </main>
+    
+    <!-- Footer -->
+    <footer>
+        <p>© Copyright Owned by Sibhathulla Mkd</p>
+    </footer>
+
+</body>
+</html>
