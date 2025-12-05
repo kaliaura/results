@@ -277,6 +277,112 @@
                 grid-template-columns: 1fr;
             }
         }
+
+
+
+/* --- SEARCH BAR STYLES (NEW) --- */
+.search-container {
+    width: 100%;
+    max-width: 500px;
+    margin: 0 auto 50px;
+    position: relative; /* Crucial for results dropdown positioning */
+}
+
+.search-input {
+    width: 100%;
+    padding: 12px 20px;
+    padding-left: 50px; /* Space for icon */
+    font-size: 1rem;
+    border: 1px solid var(--glass-border);
+    border-radius: 10px;
+    background: rgba(255, 255, 255, 0.05);
+    color: var(--text);
+    outline: none;
+    transition: border-color 0.3s, box-shadow 0.3s;
+}
+
+.search-input:focus {
+    border-color: var(--aura-1);
+    box-shadow: 0 0 0 3px rgba(124, 58, 237, 0.4);
+}
+
+.search-icon {
+    position: absolute;
+    top: 50%;
+    left: 15px;
+    transform: translateY(-50%);
+    color: var(--text-muted);
+    pointer-events: none;
+    font-size: 1.1rem;
+}
+
+/* --- SEARCH RESULTS DROPDOWN --- */
+.search-results {
+    position: absolute;
+    top: 100%; /* Below the input */
+    left: 0;
+    right: 0;
+    max-height: 250px;
+    overflow-y: auto;
+    background: #111; /* Dark background for contrast */
+    border: 1px solid var(--aura-1);
+    border-radius: 0 0 10px 10px;
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.5);
+    z-index: 50; /* Above other content */
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(5px);
+    transition: opacity 0.3s, transform 0.3s, visibility 0s 0.3s;
+}
+
+.search-results.show {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+    transition: opacity 0.3s, transform 0.3s;
+}
+
+.result-item {
+    padding: 10px 20px;
+    cursor: pointer;
+    border-bottom: 1px solid #1a1a1a;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    transition: background 0.2s, color 0.2s;
+}
+
+.result-item:hover, .result-item.active {
+    background: var(--aura-1);
+    color: #fff;
+}
+
+.result-item:last-child {
+    border-bottom: none;
+}
+
+.result-type {
+    font-size: 0.75rem;
+    padding: 3px 8px;
+    border-radius: 4px;
+    font-weight: 600;
+}
+
+.result-type.candidate { background: var(--aura-3); color: var(--bg); }
+.result-type.event { background: var(--aura-2); color: var(--bg); }
+
+/* Highlight Class for Search Jump */
+/* You need to ensure GSAP is loaded for ScrollToPlugin to work */
+.highlighted {
+    animation: highlight-pulse 0.5s 10 alternate; /* 5 seconds = 10 half-second pulses */
+}
+
+@keyframes highlight-pulse {
+    from { background-color: var(--glass); box-shadow: 0 0 15px var(--aura-1); }
+    to { background-color: var(--aura-1); box-shadow: 0 0 30px var(--aura-1); }
+}
+
+
     </style>
 </head>
 <body>
@@ -340,6 +446,21 @@
 
         <h2 class="section-title">Event <span>Results</span></h2>
 
+        <br>
+
+
+        <!-- SEARCH BAR CONTAINER (NEW) -->
+<div class="search-container">
+    <i class="fas fa-search search-icon"></i>
+    <input type="text" id="searchInput" class="search-input" placeholder="Search for events or participants..." aria-label="Search results">
+    
+    <!-- Search Results Dropdown -->
+    <div id="searchResults" class="search-results">
+        <!-- Results populated by JavaScript -->
+    </div>
+</div>
+
+<br>
         <!-- --- SECTION 2: DETAILED EVENT RESULTS --- -->
         <section class="detailed-results-grid">
             
@@ -1308,12 +1429,266 @@
                 </div>
             </div>
 
+
+
+            <div class="event-result-card">
+                <h3 class="event-title">Speech Arb </h3>
+                
+                <div class="winner-entry rank-1">
+                    <div class="winner-rank">1</div>
+                    <div class="winner-info">
+                        <span class="candidate-name">Nabhan</span>
+                    </div>
+                </div>
+
+                <div class="winner-entry rank-2">
+                    <div class="winner-rank">2</div>
+                    <div class="winner-info">
+                        <span class="candidate-name">Swalih</span>
+                     
+                    </div>
+                </div>
+                
+                <div class="winner-entry rank-3">
+                    <div class="winner-rank">3</div>
+                    <div class="winner-info">
+                        <span class="candidate-name">Hanan</span>
+                    </div>
+                </div>
+            </div>
+
+
+
+            <div class="event-result-card">
+                <h3 class="event-title">Speech MLM</h3>
+                
+                <div class="winner-entry rank-1">
+                    <div class="winner-rank">1</div>
+                    <div class="winner-info">
+                        <span class="candidate-name">Anshid</span>
+                    </div>
+                </div>
+
+                <div class="winner-entry rank-2">
+                    <div class="winner-rank">2</div>
+                    <div class="winner-info">
+                        <span class="candidate-name">Musthafa</span>
+                     
+                    </div>
+                </div>
+                
+                <div class="winner-entry rank-3">
+                    <div class="winner-rank">3</div>
+                    <div class="winner-info">
+                        <span class="candidate-name">Ziyad</span>
+                    </div>
+                </div>
+            </div>
+
+
+
+            <div class="event-result-card">
+                <h3 class="event-title">VA'Z</h3>
+                
+                <div class="winner-entry rank-1">
+                    <div class="winner-rank">1</div>
+                    <div class="winner-info">
+                        <span class="candidate-name">Sinan K</span>
+                    </div>
+                </div>
+
+                <div class="winner-entry rank-2">
+                    <div class="winner-rank">2</div>
+                    <div class="winner-info">
+                        <span class="candidate-name">Hanan</span>
+                     
+                    </div>
+                </div>
+                
+                <div class="winner-entry rank-3">
+                    <div class="winner-rank">3</div>
+                    <div class="winner-info">
+                        <span class="candidate-name">Jinan</span>
+                    </div>
+                </div>
+            </div>
+
+
+
+            <div class="event-result-card">
+                <h3 class="event-title">PadyaParayanam</h3>
+                
+                <div class="winner-entry rank-1">
+                    <div class="winner-rank">1</div>
+                    <div class="winner-info">
+                        <span class="candidate-name">Rafih</span>
+                    </div>
+                </div>
+
+                <div class="winner-entry rank-2">
+                    <div class="winner-rank">2</div>
+                    <div class="winner-info">
+                        <span class="candidate-name">Naseem</span>
+                     
+                    </div>
+                </div>
+                
+                <div class="winner-entry rank-3">
+                    <div class="winner-rank">3</div>
+                    <div class="winner-info">
+                        <span class="candidate-name">Jinan</span>
+                    </div>
+                </div>
+            </div>
+
+
+
+            <div class="event-result-card">
+                <h3 class="event-title">Song ENG</h3>
+                
+                <div class="winner-entry rank-1">
+                    <div class="winner-rank">1</div>
+                    <div class="winner-info">
+                        <span class="candidate-name">Rafih PT</span>
+                    </div>
+                </div>
+
+                <div class="winner-entry rank-2">
+                    <div class="winner-rank">2</div>
+                    <div class="winner-info">
+                        <span class="candidate-name">Bishrul Hafi</span>
+                     
+                    </div>
+                </div>
+                
+                <div class="winner-entry rank-3">
+                    <div class="winner-rank">3</div>
+                    <div class="winner-info">
+                        <span class="candidate-name">Rihan</span>
+                    </div>
+                </div>
+            </div>
+
+
+
+            <div class="event-result-card">
+                <h3 class="event-title">Mulafaza Arb</h3>
+                
+                <div class="winner-entry rank-1">
+                    <div class="winner-rank">1</div>
+                    <div class="winner-info">
+                        <span class="candidate-name">Ansar</span>
+                    </div>
+                </div>
+
+                <div class="winner-entry rank-2">
+                    <div class="winner-rank">2</div>
+                    <div class="winner-info">
+                        <span class="candidate-name">Jalal</span>
+                     
+                    </div>
+                </div>
+                
+                <div class="winner-entry rank-3">
+                    <div class="winner-rank">3</div>
+                    <div class="winner-info">
+                        <span class="candidate-name">Bishrul Hafi</span>
+                    </div>
+                </div>
+            </div>
+
+
+
+            <div class="event-result-card">
+                <h3 class="event-title">Word Fight (ENG) </h3>
+                
+                <div class="winner-entry rank-1">
+                    <div class="winner-rank">1</div>
+                    <div class="winner-info">
+                        <span class="candidate-name">Musthafa</span>
+                    </div>
+                </div>
+
+                <div class="winner-entry rank-2">
+                    <div class="winner-rank">2</div>
+                    <div class="winner-info">
+                        <span class="candidate-name">Shaheem</span>
+                     
+                    </div>
+                </div>
+                
+                <div class="winner-entry rank-3">
+                    <div class="winner-rank">3</div>
+                    <div class="winner-info">
+                        <span class="candidate-name">Shammas</span>
+                    </div>
+                </div>
+            </div>
+
+
+
+            <div class="event-result-card">
+                <h3 class="event-title">Mulafaza URD</h3>
+                
+                <div class="winner-entry rank-1">
+                    <div class="winner-rank">1</div>
+                    <div class="winner-info">
+                        <span class="candidate-name">Adhil</span>
+                    </div>
+                </div>
+
+                <div class="winner-entry rank-2">
+                    <div class="winner-rank">2</div>
+                    <div class="winner-info">
+                        <span class="candidate-name">Nabhan</span>
+                     
+                    </div>
+                </div>
+                
+                <div class="winner-entry rank-3">
+                    <div class="winner-rank">3</div>
+                    <div class="winner-info">
+                        <span class="candidate-name">Bishr</span>
+                    </div>
+                </div>
+            </div>
+
+
+
+            <div class="event-result-card">
+                <h3 class="event-title">Group Quiz</h3>
+                
+                <div class="winner-entry rank-1">
+                    <div class="winner-rank">1</div>
+                    <div class="winner-info">
+                        <span class="candidate-name">Fyrona</span>
+                    </div>
+                </div>
+
+                <div class="winner-entry rank-2">
+                    <div class="winner-rank">2</div>
+                    <div class="winner-info">
+                        <span class="candidate-name">Ignera</span>
+                     
+                    </div>
+                </div>
+                
+                <div class="winner-entry rank-3">
+                    <div class="winner-rank">3</div>
+                    <div class="winner-info">
+                        <span class="candidate-name">Calindra</span>
+                    </div>
+                </div>
+            </div>
+
+
+
+            
             <!-- Add more event cards as needed -->
             
         </section>
         
     </main>
-    
     <!-- Footer -->
     <footer>
         <p>© Copyright Owned by Sibhathulla Mkd</p>
