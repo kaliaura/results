@@ -383,6 +383,29 @@
 }
 
 
+
+
+
+/* Smooth fade + slide animation for result items */
+.search-results.show .result-item {
+    animation: fadeSlideIn 0.25s ease forwards;
+}
+@keyframes fadeSlideIn {
+    from { opacity: 0; transform: translateX(-5px); }
+    to { opacity: 1; transform: translateX(0); }
+}
+
+/* Highlight when jumped */
+.highlighted {
+    animation: jumpHighlight 3s ease-out;
+}
+@keyframes jumpHighlight {
+    0%   { background: var(--aura-1); box-shadow: 0 0 25px var(--aura-1); }
+    100% { background: var(--glass); box-shadow: none; }
+}
+
+
+
     </style>
 </head>
 <body>
@@ -1688,6 +1711,146 @@
             
         </section>
         
+
+
+<script>
+// Collect searchable data dynamically from DOM
+const eventCards = [...document.querySelectorAll(".event-result-card")];
+const searchInput = document.getElementById("searchInput");
+const resultsBox = document.getElementById("searchResults");
+
+function search(query) {
+    query = query.toLowerCase();
+    let results = [];
+
+    eventCards.forEach(card => {
+        const title = card.querySelector(".event-title").innerText.toLowerCase();
+        const candidates = [...card.querySelectorAll(".candidate-name")].map(c => c.innerText.toLowerCase());
+
+        if (title.includes(query)) {
+            results.push({ type: "event", text: title, element: card });
+        }
+
+        candidates.forEach(name => {
+            if (name.includes(query)) {
+                results.push({ type: "candidate", text: name, element: card });
+            }
+        });
+    });
+
+    return results;
+}
+
+function renderResults(list) {
+    if (!list.length) {
+        resultsBox.innerHTML = `<div class="result-item">No results found</div>`;
+        resultsBox.classList.add("show");
+        return;
+    }
+
+    resultsBox.innerHTML = list.map(r => `
+        <div class="result-item" data-index="${eventCards.indexOf(r.element)}">
+            ${r.text}
+            <span class="result-type ${r.type}">${r.type}</span>
+        </div>
+    `).join("");
+
+    resultsBox.classList.add("show");
+
+    // Add click listeners
+    document.querySelectorAll(".result-item").forEach(item => {
+        item.addEventListener("click", () => {
+            const index = item.getAttribute("data-index");
+            jumpTo(eventCards[index]);
+            resultsBox.classList.remove("show");
+        });
+    });
+}
+
+function jumpTo(element) {
+    const y = element.getBoundingClientRect().top + window.scrollY - 100;
+
+    window.scrollTo({
+        top: y,
+        behavior: "smooth"
+    });
+
+    element.classList.add("highlighted");
+    setTimeout(() => element.classList.remove("highlighted"), 3000);
+}
+
+// Input event
+searchInput.addEventListener("input", () => {
+    const q = searchInput.value.trim();
+    if (q.length === 0) {
+        resultsBox.classList.remove("show");
+        return;
+    }
+    renderResults(search(q));
+});
+
+// Hide results when clicking outside
+document.addEventListener("click", (e) => {
+    if (!document.querySelector(".search-container").contains(e.target)) {
+        resultsBox.classList.remove("show");
+    }
+});
+
+
+
+</script>
+
+
+<script>
+// --- KEYBOARD NAVIGATION FOR SEARCH RESULTS ---
+let activeIndex = -1;
+
+searchInput.addEventListener("keydown", (e) => {
+    const items = [...document.querySelectorAll(".result-item")];
+    if (!resultsBox.classList.contains("show") || items.length === 0) return;
+
+    // Arrow Down
+    if (e.key === "ArrowDown") {
+        e.preventDefault();
+        activeIndex = (activeIndex + 1) % items.length;
+        updateActive(items);
+    }
+
+    // Arrow Up
+    if (e.key === "ArrowUp") {
+        e.preventDefault();
+        activeIndex = (activeIndex - 1 + items.length) % items.length;
+        updateActive(items);
+    }
+
+    // Enter Key
+    if (e.key === "Enter") {
+        e.preventDefault();
+        if (activeIndex >= 0 && items[activeIndex]) {
+            items[activeIndex].click();
+        }
+    }
+});
+
+// Highlight active result + scroll it into view
+function updateActive(items) {
+    items.forEach(i => i.classList.remove("active"));
+    if (activeIndex >= 0) {
+        const item = items[activeIndex];
+        item.classList.add("active");
+        item.scrollIntoView({ block: "nearest", behavior: "smooth" });
+    }
+}
+
+// Reset active index when typing again
+searchInput.addEventListener("input", () => {
+    activeIndex = -1;
+});
+</script>
+
+
+
+
     </main>
     <!-- Footer -->
     <footer>
